@@ -1,24 +1,18 @@
 import UIKit
 
-class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController {
     
     @IBOutlet private var tableView: UITableView!
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private let currentDate = Date()
+    private let likeButtonActiveImage = "LikeButtonActive"
+    private let likeButtonNoActiveImage = "LikeButtonNoActive"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.rowHeight = 200
         tableView.separatorStyle = .none
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-
     }
-    
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter
-    }()
 }
 
 extension ImagesListViewController {
@@ -34,16 +28,16 @@ extension ImagesListViewController {
         cell.cellImageView.contentMode = .scaleAspectFill
         cell.cellImageView.image = image
         
-        cell.cellDateLabel.text = dateFormatter.string(from: Date())
+        cell.cellDateLabel.text = DateFormatter.dateFormatter.string(from: currentDate)
         let isLiked = indexPath.row % 2 == 0
-        let heartImageName = isLiked ? "LikeButtonActive" : "LikeButtonNoActive"
+        let heartImageName = isLiked ? likeButtonActiveImage : likeButtonNoActiveImage
 
         cell.cellLikeButton.setImage(UIImage(named: heartImageName), for: .normal)
     }
 }
 
 extension ImagesListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { }
+    // TO DO: func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let image = UIImage(named: photosName[indexPath.row]) else {
@@ -61,21 +55,18 @@ extension ImagesListViewController: UITableViewDelegate {
 
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
+        photosName.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
+        guard let imageListCell = tableView.dequeueReusableCell(
             withIdentifier: ImagesListCell.reuseIdentifier,
             for: indexPath
-        )
-            
-        guard let imageListCell = cell as? ImagesListCell else {
+        ) as? ImagesListCell else {
             return UITableViewCell()
         }
-            
+
         configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }
-    
 }
