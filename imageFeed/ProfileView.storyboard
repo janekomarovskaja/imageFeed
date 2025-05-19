@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Profile View Controller-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController id="Y6W-OH-hqX" customClass="ProfileViewController" customModule="imageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="userPic" translatesAutoresizingMaskIntoConstraints="NO" id="ncn-cN-mud" userLabel="UserPicture">
+                                <rect key="frame" x="16" y="69" width="77" height="77"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="77" id="aFe-Xy-dwY"/>
+                                    <constraint firstAttribute="height" constant="77" id="hEM-gF-TpJ"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius ">
+                                        <integer key="value" value="61"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Екатерина Новикова" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NQ1-0d-V4F" userLabel="Username">
+                                <rect key="frame" x="15.999999999999986" y="154" width="233.66666666666663" height="27.666666666666657"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="23"/>
+                                <color key="textColor" name="YPWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@ekaterina_nov" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YYh-rH-SfB" userLabel="UserNickname">
+                                <rect key="frame" x="16" y="189.66666666666666" width="97" height="15.666666666666657"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" name="YPGray"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello, world!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GW5-Bk-sU0" userLabel="UserDescription">
+                                <rect key="frame" x="16" y="213.33333333333334" width="75.666666666666671" height="15.666666666666657"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" name="YPWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UX7-F3-5ay" userLabel="ExitButton">
+                                <rect key="frame" x="333" y="89" width="44" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="44" id="TaJ-C9-irO"/>
+                                    <constraint firstAttribute="height" constant="44" id="nJj-nY-Mo9"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="exitButton"/>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
+                        <color key="backgroundColor" name="YPBlack"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="NQ1-0d-V4F" secondAttribute="trailing" constant="16" id="0pJ-tt-SPm"/>
+                            <constraint firstItem="NQ1-0d-V4F" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" constant="16" id="7LH-2l-dZZ"/>
+                            <constraint firstItem="GW5-Bk-sU0" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" constant="16" id="7ju-wH-5z2"/>
+                            <constraint firstItem="ncn-cN-mud" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" constant="16" id="Iqy-SH-Jne"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="YYh-rH-SfB" secondAttribute="trailing" constant="16" id="Lej-OD-UeK"/>
+                            <constraint firstItem="YYh-rH-SfB" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" constant="16" id="Nvu-QD-4tv"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="GW5-Bk-sU0" secondAttribute="trailing" constant="16" id="Tht-bl-UIg"/>
+                            <constraint firstItem="YYh-rH-SfB" firstAttribute="top" secondItem="NQ1-0d-V4F" secondAttribute="bottom" constant="8" id="Uad-Zo-sFy"/>
+                            <constraint firstItem="NQ1-0d-V4F" firstAttribute="top" secondItem="ncn-cN-mud" secondAttribute="bottom" constant="8" id="eg2-Wk-Ogw"/>
+                            <constraint firstItem="UX7-F3-5ay" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" constant="89" id="idA-Ur-aiw"/>
+                            <constraint firstItem="ncn-cN-mud" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" constant="69" id="vKe-4Z-s7L"/>
+                            <constraint firstItem="GW5-Bk-sU0" firstAttribute="top" secondItem="YYh-rH-SfB" secondAttribute="bottom" constant="8" id="xFQ-3C-PUh"/>
+                            <constraint firstItem="UX7-F3-5ay" firstAttribute="trailing" secondItem="5EZ-qb-Rvc" secondAttribute="trailing" constant="-16" id="xiu-hz-t9l"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="exitButton" destination="UX7-F3-5ay" id="qs3-CP-yez"/>
+                        <outlet property="userDescription" destination="GW5-Bk-sU0" id="RjM-qu-2jJ"/>
+                        <outlet property="userNickname" destination="YYh-rH-SfB" id="Qaq-0c-MJP"/>
+                        <outlet property="userPicture" destination="ncn-cN-mud" id="5MB-10-lHX"/>
+                        <outlet property="username" destination="NQ1-0d-V4F" id="HCi-Bx-IHc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="55.725190839694655" y="3.5211267605633805"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="exitButton" width="44" height="44"/>
+        <image name="userPic" width="70" height="70"/>
+        <namedColor name="YPBlack">
+            <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YPGray">
+            <color red="0.68235294117647061" green="0.68627450980392157" blue="0.70588235294117652" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YPWhite">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
