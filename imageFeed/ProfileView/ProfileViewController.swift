@@ -1,23 +1,38 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
-    let exitButtonPictureName = "exitButton"
-    let userPictureName = "userPic"
-
+    private let exitButtonPictureName = "exitButton"
+    private let userPictureName = "userPic"
+    
+    private let userPicture = UIImageView()
+    private let userName = UILabel()
+    private let userNickname = UILabel()
+    private let userDescription = UILabel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupUserPicture()
+        setupuserName()
+        setupUserNickname()
+        setupUserDescription()
+        setupExitButton()
+    }
+    
+    private func setupUserPicture() {
+        userPicture.image = UIImage(named: userPictureName)
+        userPicture.translatesAutoresizingMaskIntoConstraints = false
+        userPicture.layer.cornerRadius = 61
+        view.addSubview(userPicture)
         
-        let userPicture = UIImage(named: userPictureName)
-        let imageView = UIImageView(image: userPicture)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 61
-        view.addSubview(imageView)
-        imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
-                
-        let userName = UILabel()
+        NSLayoutConstraint.activate([
+            userPicture.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            userPicture.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            userPicture.widthAnchor.constraint(equalToConstant: 70),
+            userPicture.heightAnchor.constraint(equalToConstant: 70)
+        ])
+    }
+    
+    private func setupuserName() {
         userName.text = "Екатерина Новикова"
         userName.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         userName.textColor = .ypWhite
@@ -26,11 +41,15 @@ final class ProfileViewController: UIViewController {
         userName.sizeToFit()
         userName.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userName)
-        userName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        userName.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
-        userName.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8).isActive = true
         
-        let userNickname = UILabel()
+        NSLayoutConstraint.activate([
+            userName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            userName.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            userName.topAnchor.constraint(equalTo: userPicture.bottomAnchor, constant: 8)
+        ])
+    }
+
+    private func setupUserNickname() {
         userNickname.text = "@ekaterina_nov"
         userNickname.textColor = .ypGray
         userNickname.font = UIFont.systemFont(ofSize: 13)
@@ -39,11 +58,15 @@ final class ProfileViewController: UIViewController {
         userNickname.sizeToFit()
         userNickname.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userNickname)
-        userNickname.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        userNickname.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
-        userNickname.topAnchor.constraint(equalTo: userName.bottomAnchor, constant: 8).isActive = true
         
-        let userDescription = UILabel()
+        NSLayoutConstraint.activate([
+            userNickname.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            userNickname.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            userNickname.topAnchor.constraint(equalTo: userName.bottomAnchor, constant: 8)
+        ])
+    }
+    
+    private func setupUserDescription() {
         userDescription.text = "Hello, world!"
         userDescription.textColor = .ypWhite
         userDescription.font = UIFont.systemFont(ofSize: 13)
@@ -52,22 +75,33 @@ final class ProfileViewController: UIViewController {
         userDescription.sizeToFit()
         userDescription.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userDescription)
-        userDescription.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        userDescription.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
-        userDescription.topAnchor.constraint(equalTo: userNickname.bottomAnchor, constant: 8).isActive = true
         
+        NSLayoutConstraint.activate([
+            userDescription.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            userDescription.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            userDescription.topAnchor.constraint(equalTo: userNickname.bottomAnchor, constant: 8)
+        ])
+        
+    }
+    
+    private func setupExitButton() {
+        guard let exitImage = UIImage(named: exitButtonPictureName) else {
+            return
+        }
         let exitButton = UIButton.systemButton(
-            with: UIImage(named: exitButtonPictureName)!,
-                    target: self,
-                    action: #selector(Self.didTapButton)
-                )
+            with: exitImage,
+            target: self,
+            action: #selector(Self.didTapButton)
+        )
         exitButton.tintColor = .ypRed
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(exitButton)
-        exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        exitButton.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
-            
+        
+        NSLayoutConstraint.activate([
+            exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            exitButton.centerYAnchor.constraint(equalTo: userPicture.centerYAnchor)
+        ])
     }
-    
+    // TO DO:
     @objc private func didTapButton(_ sender: UIButton) {}
 }
