@@ -1,6 +1,5 @@
 import UIKit
 
-
 final class AuthViewController: UIViewController {
     private let authScreenPictureName = "authScreenPicture"
     
@@ -51,7 +50,17 @@ final class AuthViewController: UIViewController {
     
     @objc private func authButtonTapped(_ sender: UIButton) {
         let webView = WebViewViewController()
+        webView.delegate = self
         webView.modalPresentationStyle = .fullScreen
         present(webView, animated: true, completion: nil)
+    }
+}
+
+extension AuthViewController: WebViewViewControllerDelegate {
+    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+    }
+
+    func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
+        vc.dismiss(animated: true)
     }
 }
