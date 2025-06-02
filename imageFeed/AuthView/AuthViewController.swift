@@ -1,6 +1,12 @@
 import UIKit
 
+protocol AuthViewControllerDelegate: AnyObject {
+    func didAuthenticate(_ vc: AuthViewController)
+}
+
 final class AuthViewController: UIViewController {
+    private let oauth2Service = OAuth2Service.shared
+    weak var delegate: AuthViewControllerDelegate?
     private let authScreenPictureName = "authScreenPicture"
     
     private let authScreenPicture = UIImageView()
@@ -34,9 +40,6 @@ final class AuthViewController: UIViewController {
         authButton.setTitleColor(.ypBlack, for: .normal)
         authButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         view.addSubview(authButton)
-        view.bringSubviewToFront(authButton)
-        authButton.isUserInteractionEnabled = true
-        authButton.isEnabled = true
         
         authButton.addTarget(self, action: #selector(authButtonTapped), for: .touchUpInside)
         
@@ -58,6 +61,19 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        OAuth2Service.shared.fetchOAuthToken(code: code) { result in
+            switch result {
+            case .success(let token):
+                OAuth2TokenStorage().token = token
+                DispatchQueue.main.async {
+                    self.delegate?.didAuthenticate(self)
+                }
+                print("Token received successfully")
+
+            case .failure(let error):
+                print("Some errors occurred while receiving the token: \(error)")
+            }
+        }
     }
 
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
