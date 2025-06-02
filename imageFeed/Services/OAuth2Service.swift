@@ -40,7 +40,7 @@ final class OAuth2Service {
         task?.cancel()
 
         guard let request = makeOAuthTokenRequest(code: code) else {
-            print("")
+            print("Error occured while creating URLRequest")
             completion(.failure(NetworkError.urlSessionError))
             return
         }
