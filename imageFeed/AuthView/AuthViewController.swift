@@ -7,19 +7,19 @@ protocol AuthViewControllerDelegate: AnyObject {
 final class AuthViewController: UIViewController {
     private let oauth2Service = OAuth2Service.shared
     weak var delegate: AuthViewControllerDelegate?
-    private let authScreenPictureName = "authScreenPicture"
     
     private let authScreenPicture = UIImageView()
     private let authButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(named: UIColors.ypBlack)
         setupPicture()
         setupAuthButton()
     }
     
     private func setupPicture() {
-        authScreenPicture.image = UIImage(named: authScreenPictureName)
+        authScreenPicture.image = UIImage(named: ImageNames.authScreenPictureName)
         authScreenPicture.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(authScreenPicture)
         

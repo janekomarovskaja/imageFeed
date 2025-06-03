@@ -9,7 +9,6 @@ protocol WebViewViewControllerDelegate: AnyObject {
 final class WebViewViewController: UIViewController {
     private var webView: WKWebView!
     private let progressBar = UIProgressView()
-    private let backButtonPictureName = "BackButton"
     
     weak var delegate: WebViewViewControllerDelegate?
     
@@ -62,7 +61,7 @@ final class WebViewViewController: UIViewController {
     }
     
     private func setupBackButton() {
-        guard let backButtonImage = UIImage(named: backButtonPictureName) else {
+        guard let backButtonImage = UIImage(named: ImageNames.webViewbackButtonPictureName) else {
             return
         }
         let backButton = UIButton.systemButton(
