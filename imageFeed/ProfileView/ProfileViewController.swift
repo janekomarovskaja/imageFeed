@@ -1,9 +1,6 @@
 import UIKit
 
-final class ProfileViewController: UIViewController {
-    private let exitButtonPictureName = "exitButton"
-    private let userPictureName = "userPic"
-    
+final class ProfileViewController: UIViewController {   
     private let userPicture = UIImageView()
     private let userName = UILabel()
     private let userNickname = UILabel()
@@ -19,7 +16,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupUserPicture() {
-        userPicture.image = UIImage(named: userPictureName)
+        userPicture.image = UIImage(named: ImageNames.profileUserPictureName)
         userPicture.translatesAutoresizingMaskIntoConstraints = false
         userPicture.layer.cornerRadius = 61
         view.addSubview(userPicture)
@@ -85,7 +82,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupExitButton() {
-        guard let exitImage = UIImage(named: exitButtonPictureName) else {
+        guard let exitImage = UIImage(named: ImageNames.profileExitButtonPictureName) else {
             return
         }
         let exitButton = UIButton.systemButton(

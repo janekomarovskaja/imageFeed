@@ -5,9 +5,6 @@ final class ImagesListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private let currentDate = Date()
-    private let likeButtonActiveImage = "LikeButtonActive"
-    private let likeButtonNoActiveImage = "LikeButtonNoActive"
-    private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,7 +13,7 @@ final class ImagesListViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == showSingleImageSegueIdentifier,
+        guard segue.identifier == SegueIdentifiers.showSingleImageSegueIdentifier,
               let viewController = segue.destination as? SingleImageViewController,
               let indexPath = sender as? IndexPath else {
             super.prepare(for: segue, sender: sender)
@@ -43,7 +40,7 @@ extension ImagesListViewController {
         
         cell.cellDateLabel.text = DateFormatter.dateFormatter.string(from: currentDate)
         let isLiked = indexPath.row % 2 == 0
-        let heartImageName = isLiked ? likeButtonActiveImage : likeButtonNoActiveImage
+        let heartImageName = isLiked ? ImageNames.feedLikeButtonActiveImage : ImageNames.feedLikeButtonNoActiveImage
 
         cell.cellLikeButton.setImage(UIImage(named: heartImageName), for: .normal)
     }
@@ -51,7 +48,7 @@ extension ImagesListViewController {
 
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+        performSegue(withIdentifier: SegueIdentifiers.showSingleImageSegueIdentifier, sender: indexPath)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
