@@ -1,20 +1,78 @@
 import UIKit
+import Kingfisher
 
-final class ProfileViewController: UIViewController {   
+final class ProfileViewController: UIViewController {
     private let userPicture = UIImageView()
     private let userName = UILabel()
     private let userNickname = UILabel()
     private let userDescription = UILabel()
-    
+    private let profileService = ProfileService()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .ypBlack
+
         setupUserPicture()
         setupuserName()
         setupUserNickname()
         setupUserDescription()
         setupExitButton()
+        setupAvatarObserver()
+
+        if let profile = profileService.profile {
+            updateProfileDetails(profile: profile)
+        } else if let token = OAuth2TokenStorage().token {
+            ProfileService.shared.fetchProfile(token) { [weak self] result in
+                switch result {
+                case .success(let profile):
+                    self?.updateProfileDetails(profile: profile)
+                    self?.fetchAvatarURL(username: profile.username)
+                case .failure(let error):
+                    print("ProfileViewController: Failed to fetch profile - \(error.localizedDescription)")
+                }
+            }
+        }
     }
-    
+
+    private func updateProfileDetails(profile: Profile) {
+        userName.text = profile.name
+        userNickname.text = profile.loginName
+        userDescription.text = profile.bio
+    }
+
+    private func fetchAvatarURL(username: String) {
+        ProfileImageService.shared.fetchProfileImageURL(username: username) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                print("ProfileViewController: Failed to fetch avatar URL - \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func setupAvatarObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateAvatarImage(_:)),
+            name: ProfileImageService.didChangeNotification,
+            object: nil
+        )
+    }
+
+    @objc private func updateAvatarImage(_ notification: Notification) {
+        guard
+            let userInfo = notification.userInfo,
+            let urlString = userInfo[ProfileImageService.userInfoKey] as? String,
+            let url = URL(string: urlString)
+        else {
+            print("ProfileViewController: Invalid avatar URL in notification")
+            return
+        }
+
+        userPicture.kf.setImage(with: url)
+    }
+
     private func setupUserPicture() {
         userPicture.image = UIImage(named: ImageNames.profileUserPictureName)
         userPicture.translatesAutoresizingMaskIntoConstraints = false
@@ -47,7 +105,6 @@ final class ProfileViewController: UIViewController {
     }
 
     private func setupUserNickname() {
-        userNickname.text = "@ekaterina_nov"
         userNickname.textColor = .ypGray
         userNickname.font = UIFont.systemFont(ofSize: 13)
         userNickname.numberOfLines = 0
@@ -55,14 +112,14 @@ final class ProfileViewController: UIViewController {
         userNickname.sizeToFit()
         userNickname.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userNickname)
-        
+
         NSLayoutConstraint.activate([
             userNickname.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             userNickname.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             userNickname.topAnchor.constraint(equalTo: userName.bottomAnchor, constant: 8)
         ])
     }
-    
+
     private func setupUserDescription() {
         userDescription.text = "Hello, world!"
         userDescription.textColor = .ypWhite
@@ -72,15 +129,14 @@ final class ProfileViewController: UIViewController {
         userDescription.sizeToFit()
         userDescription.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userDescription)
-        
+
         NSLayoutConstraint.activate([
             userDescription.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             userDescription.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             userDescription.topAnchor.constraint(equalTo: userNickname.bottomAnchor, constant: 8)
         ])
-        
     }
-    
+
     private func setupExitButton() {
         guard let exitImage = UIImage(named: ImageNames.profileExitButtonPictureName) else {
             return
@@ -93,12 +149,17 @@ final class ProfileViewController: UIViewController {
         exitButton.tintColor = .ypRed
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(exitButton)
-        
+
         NSLayoutConstraint.activate([
             exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             exitButton.centerYAnchor.constraint(equalTo: userPicture.centerYAnchor)
         ])
     }
+
     // TO DO:
     @objc private func didTapButton(_ sender: UIButton) {}
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }

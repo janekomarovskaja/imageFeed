@@ -7,30 +7,36 @@ enum NetworkError: Error {
 }
 
 extension URLSession {
-    func data(
+    func objectTask<T: Decodable>(
         for request: URLRequest,
-        completion: @escaping (Result<Data, Error>) -> Void
+        completion: @escaping (Result<T, Error>) -> Void
     ) -> URLSessionTask {
-        let fulfillCompletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in
+        let decoder = JSONDecoder()
+
+        let task = dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
-                completion(result)
+                if let error = error {
+                    print("Network error - \(error.localizedDescription)")
+                    completion(.failure(error))
+                    return
+                }
+
+                guard let data = data else {
+                    print("No data received")
+                    completion(.failure(NSError(domain: "NoData", code: -1)))
+                    return
+                }
+
+                do {
+                    let decodedObject = try decoder.decode(T.self, from: data)
+                    completion(.success(decodedObject))
+                } catch {
+                    print("Decoding error - \(error.localizedDescription), Data: \(String(data: data, encoding: .utf8) ?? "")")
+                    completion(.failure(error))
+                }
             }
         }
-        
-        let task = dataTask(with: request, completionHandler: { data, response, error in
-            if let data = data, let response = response, let statusCode = (response as? HTTPURLResponse)?.statusCode {
-                if 200 ..< 300 ~= statusCode {
-                    fulfillCompletionOnTheMainThread(.success(data))
-                } else {
-                    fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
-                }
-            } else if let error = error {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
-            } else {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
-            }
-        })
-        
+
         return task
     }
 }
