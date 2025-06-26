@@ -21,6 +21,7 @@ final class ProfileViewController: UIViewController {
 
         if let profile = profileService.profile {
             updateProfileDetails(profile: profile)
+            fetchAvatarURL(username: profile.username)
         } else if let token = OAuth2TokenStorage().token {
             ProfileService.shared.fetchProfile(token) { [weak self] result in
                 switch result {
@@ -76,7 +77,8 @@ final class ProfileViewController: UIViewController {
     private func setupUserPicture() {
         userPicture.image = UIImage(named: ImageNames.profileUserPictureName)
         userPicture.translatesAutoresizingMaskIntoConstraints = false
-        userPicture.layer.cornerRadius = 61
+        userPicture.layer.cornerRadius = 35
+        userPicture.clipsToBounds = true
         view.addSubview(userPicture)
         
         NSLayoutConstraint.activate([
@@ -156,8 +158,17 @@ final class ProfileViewController: UIViewController {
         ])
     }
 
-    // TO DO:
-    @objc private func didTapButton(_ sender: UIButton) {}
+    @objc private func didTapButton(_ sender: UIButton) {
+        OAuth2TokenStorage().token = nil
+
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Unable to get main window")
+            return
+        }
+
+        let splashViewController = SplashViewController()
+        window.rootViewController = splashViewController
+    }
 
     deinit {
         NotificationCenter.default.removeObserver(self)

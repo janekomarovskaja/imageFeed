@@ -25,14 +25,26 @@ final class ProfileImageService {
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         currentTask?.cancel()
 
+        guard !username.isEmpty else {
+            print("ProfileImageService: Username is empty")
+            completion(.failure(NSError(domain: "EmptyUsername", code: 0)))
+            return
+        }
+
         guard let url = URL(string: "https://api.unsplash.com/users/\(username)") else {
             print("ProfileImageService: Invalid URL for username: \(username)")
             completion(.failure(NSError(domain: "InvalidURL", code: 0)))
             return
         }
 
+        guard let token = OAuth2TokenStorage().token else {
+            print("ProfileImageService: No token available")
+            completion(.failure(NSError(domain: "NoToken", code: 0)))
+            return
+        }
+
         var request = URLRequest(url: url)
-        request.setValue("Bearer YOUR_ACCESS_TOKEN", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
         let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             guard let self = self else { return }
@@ -40,6 +52,12 @@ final class ProfileImageService {
             switch result {
             case .success(let userResult):
                 let smallImageURL = userResult.profileImage.small
+                guard !smallImageURL.isEmpty else {
+                    print("ProfileImageService: Empty avatar URL for \(username)")
+                    completion(.failure(NSError(domain: "EmptyURL", code: 0)))
+                    return
+                }
+
                 self.avatarURL = smallImageURL
 
                 NotificationCenter.default.post(
