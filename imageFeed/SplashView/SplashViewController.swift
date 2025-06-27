@@ -49,15 +49,19 @@ final class SplashViewController: UIViewController {
     }
 
     private func switchToTabBarController() {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration")
-            return
+        DispatchQueue.main.async {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let window = windowScene.windows.first else {
+                assertionFailure("Invalid window configuration")
+                return
+            }
+
+            let tabBarController = UIStoryboard(name: "Main", bundle: .main)
+                .instantiateViewController(withIdentifier: "TabBarViewController")
+
+            window.rootViewController = tabBarController
+            window.makeKeyAndVisible()
         }
-
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarViewController")
-
-        window.rootViewController = tabBarController
     }
 
     private func fetchProfile(_ token: String) {
@@ -65,19 +69,24 @@ final class SplashViewController: UIViewController {
         
         profileService.fetchProfile(token) { [weak self] result in
             guard let self = self else { return }
-            UIBlockingProgressHUD.dismiss()
-            
+
             switch result {
             case .success(let profile):
                 ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
-                self.switchToTabBarController()
                 
+                DispatchQueue.main.async {
+                    UIBlockingProgressHUD.dismiss()
+                    self.switchToTabBarController()
+                }
+
             case .failure(let error):
-                self.showErrorAlert(message: "Не удалось загрузить профиль: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    UIBlockingProgressHUD.dismiss()
+                    self.showErrorAlert(message: "Не удалось загрузить профиль: \(error.localizedDescription)")
+                }
             }
         }
     }
-
     private func showErrorAlert(message: String) {
         let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ок", style: .default))

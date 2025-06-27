@@ -36,7 +36,9 @@ final class ProfileService {
 
         guard let request = makeRequest(token: token) else {
             print("ProfileService: Invalid request")
-            completion(.failure(NSError(domain: "InvalidRequest", code: 0)))
+            DispatchQueue.main.async {
+                completion(.failure(NSError(domain: "InvalidRequest", code: 0)))
+            }
             return
         }
 
@@ -56,11 +58,16 @@ final class ProfileService {
 
                 self.profile = profile
                 print("ProfileService: Profile fetched successfully")
-                completion(.success(profile))
+
+                DispatchQueue.main.async {
+                    completion(.success(profile))
+                }
 
             case .failure(let error):
                 print("ProfileService: Error - \(error.localizedDescription)")
-                completion(.failure(error))
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
             }
         }
 
