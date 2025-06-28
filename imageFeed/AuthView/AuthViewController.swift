@@ -91,7 +91,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             preferredStyle: .alert
         )
 
-        alert.addAction(UIAlertAction(title: "Ок", style: .default))
+        alert.addAction(UIAlertAction(title: "ОK", style: .default))
         present(alert, animated: true)
     }
 }
