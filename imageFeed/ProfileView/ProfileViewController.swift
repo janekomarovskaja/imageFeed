@@ -6,7 +6,7 @@ final class ProfileViewController: UIViewController {
     private let userName = UILabel()
     private let userNickname = UILabel()
     private let userDescription = UILabel()
-    private let profileService = ProfileService()
+    private let profileService = ProfileService.shared
 
     override func viewDidLoad() {
         super.viewDidLoad()

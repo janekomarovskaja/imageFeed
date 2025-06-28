@@ -1,35 +1,12 @@
 import Foundation
 
-struct ProfileResult: Codable {
-    let id: String
-    let username: String
-    let firstName: String?
-    let lastName: String?
-    let bio: String?
-
-    enum CodingKeys: String, CodingKey {
-        case id
-        case username
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case bio
-    }
-}
-
-struct Profile {
-    let username: String
-    let name: String
-    let loginName: String
-    let bio: String?
-}
-
 final class ProfileService {
     static let shared = ProfileService()
 
     private var task: URLSessionTask?
     private(set) var profile: Profile?
 
-    init() {}
+    private init() {}
 
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         task?.cancel()
@@ -75,7 +52,7 @@ final class ProfileService {
     }
 
     private func makeRequest(token: String) -> URLRequest? {
-        guard let url = URL(string: "https://api.unsplash.com/me") else { return nil }
+        guard let url = Constants.profileRequestURL else { return nil }
 
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
