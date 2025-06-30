@@ -61,7 +61,10 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        
+        UIBlockingProgressHUD.show()
         OAuth2Service.shared.fetchOAuthToken(code: code) { result in
+            UIBlockingProgressHUD.dismiss()
             switch result {
             case .success(let token):
                 OAuth2TokenStorage().token = token
@@ -72,11 +75,23 @@ extension AuthViewController: WebViewViewControllerDelegate {
 
             case .failure(let error):
                 print("Some errors occurred while receiving the token: \(error)")
+                self.showLoginErrorAlert()
             }
         }
     }
 
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         vc.dismiss(animated: true)
+    }
+    
+    private func showLoginErrorAlert() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так(",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "ОK", style: .default))
+        present(alert, animated: true)
     }
 }
