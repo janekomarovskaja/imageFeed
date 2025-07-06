@@ -1,5 +1,4 @@
 import Foundation
-import UIKit
 
 final class ImagesListService {
     static let shared = ImagesListService()
@@ -81,7 +80,7 @@ final class ImagesListService {
 
         var request = URLRequest(url: url)
         request.setValue("Bearer \(String(describing: OAuth2TokenStorage().token))", forHTTPHeaderField: "Authorization")
-        request.httpMethod = isLike ? "POST" : "DELETE"
+        request.httpMethod = isLike ? HTTPMethod.post.rawValue : HTTPMethod.delete.rawValue
 
         let task = session.dataTask(with: request) { [weak self] data, response, error in
             if let error = error {

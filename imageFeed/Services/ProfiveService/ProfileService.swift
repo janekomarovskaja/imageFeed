@@ -59,7 +59,7 @@ final class ProfileService {
         guard let url = Constants.profileRequestURL else { return nil }
 
         var request = URLRequest(url: url)
-        request.httpMethod = "GET"
+        request.httpMethod = HTTPMethod.get.rawValue
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
     }
