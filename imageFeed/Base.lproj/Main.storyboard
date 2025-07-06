@@ -58,6 +58,9 @@
                                                     <state key="normal">
                                                         <color key="titleColor" name="YPWhite"/>
                                                     </state>
+                                                    <connections>
+                                                        <action selector="tapLikeButton:" destination="OOC-yW-cC3" eventType="touchUpInside" id="HXS-tQ-gmh"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" name="YPBlack"/>
@@ -163,10 +166,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gD5-Cf-vI1">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gD5-Cf-vI1">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="W46-kq-AUc" userLabel="SingleImage">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W46-kq-AUc" userLabel="SingleImage">
                                         <rect key="frame" x="0.0" y="0.0" width="1600" height="1059"/>
                                     </imageView>
                                 </subviews>

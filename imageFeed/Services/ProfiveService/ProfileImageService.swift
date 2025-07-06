@@ -21,6 +21,10 @@ final class ProfileImageService {
 
     private var currentTask: URLSessionTask?
     private(set) var avatarURL: String?
+    
+    func clean() {
+        avatarURL = nil
+    }
 
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         currentTask?.cancel()
