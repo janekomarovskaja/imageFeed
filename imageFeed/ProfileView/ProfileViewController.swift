@@ -159,15 +159,31 @@ final class ProfileViewController: UIViewController {
     }
 
     @objc private func didTapButton(_ sender: UIButton) {
-        OAuth2TokenStorage().token = nil
+        showLogoutAlert()
+    }
+    
+    private func showLogoutAlert() {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
 
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Unable to get main window")
-            return
+        let yesAction = UIAlertAction(title: "Да", style: .default) { _ in
+            ProfileLogoutService.shared.logout()
+            self.dismiss(animated: true)
+            guard let window = UIApplication.shared.windows.first else {
+                assertionFailure("Unable to get main window")
+                return
+            }
+            let splashViewController = SplashViewController()
+            window.rootViewController = splashViewController
         }
-
-        let splashViewController = SplashViewController()
-        window.rootViewController = splashViewController
+        let cancelAction = UIAlertAction(title: "Нет", style: .default)
+        
+        alert.addAction(yesAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true)
     }
 
     deinit {

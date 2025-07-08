@@ -7,6 +7,10 @@ final class ProfileService {
     private(set) var profile: Profile?
 
     private init() {}
+    
+    func clean() {
+        profile = nil
+    }
 
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         task?.cancel()
@@ -55,7 +59,7 @@ final class ProfileService {
         guard let url = Constants.profileRequestURL else { return nil }
 
         var request = URLRequest(url: url)
-        request.httpMethod = "GET"
+        request.httpMethod = HTTPMethod.get.rawValue
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
     }
