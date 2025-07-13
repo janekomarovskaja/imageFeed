@@ -66,6 +66,7 @@ final class ProfileViewController: UIViewController, ProfileViewProtocol {
         userName.sizeToFit()
         userName.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userName)
+        userName.accessibilityLabel = "ProfileUserName"
         
         NSLayoutConstraint.activate([
             userName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
@@ -82,6 +83,7 @@ final class ProfileViewController: UIViewController, ProfileViewProtocol {
         userNickname.sizeToFit()
         userNickname.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userNickname)
+        userNickname.accessibilityLabel = "ProfileUserNickName"
 
         NSLayoutConstraint.activate([
             userNickname.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
@@ -99,6 +101,7 @@ final class ProfileViewController: UIViewController, ProfileViewProtocol {
         userDescription.sizeToFit()
         userDescription.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(userDescription)
+        userDescription.accessibilityLabel = "ProfileDescription"
 
         NSLayoutConstraint.activate([
             userDescription.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
@@ -124,6 +127,7 @@ final class ProfileViewController: UIViewController, ProfileViewProtocol {
             exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             exitButton.centerYAnchor.constraint(equalTo: userPicture.centerYAnchor)
         ])
+        exitButton.accessibilityIdentifier = "ExitButton"
     }
 
     @objc private func didTapButton(_ sender: UIButton) {

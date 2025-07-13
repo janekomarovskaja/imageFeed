@@ -48,6 +48,7 @@
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wZ8-ul-FQk" userLabel="LikeButton">
                                                     <rect key="frame" x="333" y="4" width="44" height="44"/>
+                                                    <accessibility key="accessibilityConfiguration" identifier="LikeButton"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="44" id="sTu-In-ahB"/>
                                                         <constraint firstAttribute="width" constant="44" id="zZP-6C-IYx"/>
@@ -99,7 +100,7 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="" image="tab_editorial_active" id="Sbk-mW-J54"/>
-                    <navigationItem key="navigationItem" id="3ap-se-Djs"/>
+                    <navigationItem key="navigationItem" customizationIdentifier="BackButton" id="3ap-se-Djs"/>
                     <connections>
                         <outlet property="tableView" destination="lFT-5e-BOs" id="Kv2-lu-bBT"/>
                         <segue destination="fCI-hq-HUv" kind="presentation" identifier="ShowSingleImage" id="4j7-EA-f7n"/>

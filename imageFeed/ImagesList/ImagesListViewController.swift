@@ -25,7 +25,6 @@ final class ImagesListViewController: UIViewController, ImagesListViewProtocol {
         tableView.dataSource = self
         tableView.delegate = self
         
-        presenter = ImagesListPresenter(view: self)
         presenter.viewDidLoad()
     }
     
@@ -91,6 +90,20 @@ final class ImagesListViewController: UIViewController, ImagesListViewProtocol {
         }
         
         updateLikeState(for: cell, isLiked: photo.isLiked)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == SegueIdentifiers.showSingleImageSegueIdentifier,
+              let viewController = segue.destination as? SingleImageViewController,
+              let indexPath = sender as? IndexPath else {
+            super.prepare(for: segue, sender: sender)
+            return
+        }
+        
+        let photo = presenter.photo(at: indexPath.row)
+        if let fullURL = photo.fullImageURL {
+            viewController.fullImageURL = fullURL
+        }
     }
 }
 

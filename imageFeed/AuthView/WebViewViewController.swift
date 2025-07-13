@@ -50,6 +50,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
         webView.translatesAutoresizingMaskIntoConstraints = false
         view.layoutIfNeeded()
         view.addSubview(webView)
+        webView.accessibilityIdentifier = "UnsplashWebView"
 
         NSLayoutConstraint.activate([
             webView.topAnchor.constraint(equalTo: view.topAnchor),
