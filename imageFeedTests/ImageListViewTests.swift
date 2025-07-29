@@ -1,51 +1,88 @@
+
 import XCTest
 @testable import imageFeed
 
 final class ImagesListViewTests: XCTestCase {
+
+    // MARK: - Properties
+
+    var presenter: ImagesListPresenterMock!
+    var service: ImagesListServiceMock!
+    var spy: ImageListViewControllerSpyMock!
+
+    // MARK: - Lifecycle
+
+    override func setUp() {
+        super.setUp()
+        presenter = ImagesListPresenterMock()
+        service = ImagesListServiceMock()
+        spy = ImageListViewControllerSpyMock()
+    }
+
+    override func tearDown() {
+        weak var weakPresenter = presenter
+        weak var weakService = service
+        weak var weakSpy = spy
+
+        presenter = nil
+        service = nil
+        spy = nil
+        super.tearDown()
+
+        XCTAssertNil(weakPresenter)
+        XCTAssertNil(weakService)
+        XCTAssertNil(weakSpy)
+    }
+
+    // MARK: - Presenter tests
+
     func testPhotosCount() {
-        let presenterSpy = ImageListPresenterSpy()
-        
-        XCTAssertEqual(presenterSpy.photosCount, 10)
+        // Then
+        XCTAssertEqual(presenter.photosCount, 10)
     }
-    
+
     func testViewDidLoad() {
-        let presenterSpy = ImageListPresenterSpy()
-        
-        presenterSpy.viewDidLoad()
-        
-        XCTAssertTrue(presenterSpy.viewDidLoadCalled)
+        // When
+        presenter.viewDidLoad()
+
+        // Then
+        XCTAssertTrue(presenter.viewDidLoadCalled)
     }
-    
+
     func testFetchNextPage() {
-        let presenterSpy = ImageListPresenterSpy()
-        
-        presenterSpy.fetchNextPage()
-        
-        XCTAssertTrue(presenterSpy.fetchNextPageCalled)
+        // When
+        presenter.fetchNextPage()
+
+        // Then
+        XCTAssertTrue(presenter.fetchNextPageCalled)
     }
-    
+
     func testDidTapLike() {
-        let presenterSpy = ImageListPresenterSpy()
+        // Given
         let cell = ImagesListCell()
-        
-        presenterSpy.didTapLike(on: cell)
-        
-        XCTAssertTrue(presenterSpy.didTapLikeCalledWithCell === cell)
+
+        // When
+        presenter.didTapLike(on: cell)
+
+        // Then
+        XCTAssertTrue(presenter.didTapLikeCalledWithCell === cell)
     }
-    
+
     func testPhotoAtIndex() {
-        let presenterSpy = ImageListPresenterSpy()
-        
-        let photo = presenterSpy.photo(at: 5)
-        
-        XCTAssertEqual(presenterSpy.photoCalledIndex, 5)
+        // When
+        let photo = presenter.photo(at: 5)
+
+        // Then
+        XCTAssertEqual(presenter.photoCalledIndex, 5)
         XCTAssertEqual(photo.id, "1")
     }
-    
+
+    // MARK: - Service tests
+
     func testAddPhotoToArray() {
-        let service = MockImagesListService()
+        // Given
         XCTAssertTrue(service.photos.isEmpty)
-        
+
         let photo = Photo(
             id: "1",
             size: CGSize(width: 100, height: 100),
@@ -55,54 +92,62 @@ final class ImagesListViewTests: XCTestCase {
             largeImageURL: "https://example.com/large.jpg",
             fullImageURL: "https://example.com/full.jpg"
         )
-        
+
+        // When
         service.addPhoto(photo)
-        
+
+        // Then
         XCTAssertEqual(service.photos.count, 1)
         XCTAssertEqual(service.photos.first?.id, "1")
     }
-    
+
+    // MARK: - View (Spy) tests
+
     func testReloadTable() {
-        let spy = ImageListViewControllerSpy()
-        
+        // When
         spy.reloadTable()
-        
+
+        // Then
         XCTAssertTrue(spy.reloadTableCalled)
     }
 
     func testInsertRows() {
-        let spy = ImageListViewControllerSpy()
+        // Given
         let indexPaths = [IndexPath(row: 0, section: 0), IndexPath(row: 1, section: 0)]
-        
+
+        // When
         spy.insertRows(at: indexPaths)
-        
+
+        // Then
         XCTAssertTrue(spy.insertRowsCalled)
         XCTAssertEqual(spy.insertRowsIndexPaths, indexPaths)
     }
 
     func testShowLikeLoader() {
-        let spy = ImageListViewControllerSpy()
-        
+        // When
         spy.showLikeLoader()
-        
+
+        // Then
         XCTAssertTrue(spy.showLikeLoaderCalled)
     }
 
     func testHideLikeLoader() {
-        let spy = ImageListViewControllerSpy()
-        
+        // When
         spy.hideLikeLoader()
-        
+
+        // Then
         XCTAssertTrue(spy.hideLikeLoaderCalled)
     }
 
     func testUpdateLikeState() {
-        let spy = ImageListViewControllerSpy()
+        // Given
         let cell = ImagesListCell()
         let isLiked = true
-        
+
+        // When
         spy.updateLikeState(for: cell, isLiked: isLiked)
-        
+
+        // Then
         XCTAssertTrue(spy.updateLikeStateCalled)
         XCTAssertTrue(spy.updatedLikeStateCell === cell)
         XCTAssertEqual(spy.updatedLikeStateIsLiked, isLiked)

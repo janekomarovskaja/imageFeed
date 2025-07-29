@@ -1,7 +1,7 @@
 @testable import imageFeed
 import Foundation
 
-final class ImageListViewControllerSpy: ImagesListViewProtocol {
+final class ImageListViewControllerSpyMock: ImagesListViewProtocol {
     var reloadTableCalled = false
     var insertRowsCalled = false
     var insertRowsIndexPaths: [IndexPath] = []

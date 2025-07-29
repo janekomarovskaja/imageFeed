@@ -1,7 +1,7 @@
 import imageFeed
 import Foundation
 
-final class WebViewPresenterSpy: WebViewPresenterProtocol {
+final class WebViewPresenterSpyMock: WebViewPresenterProtocol {
     var viewDidLoadCalled: Bool = false
     var view: WebViewViewControllerProtocol?
     

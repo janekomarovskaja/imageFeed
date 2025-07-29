@@ -2,28 +2,66 @@ import XCTest
 @testable import imageFeed
 
 final class ProfileViewTests: XCTestCase {
-    func testPresenterViewDidLoad() {
-        let presenterSpy = ProfileViewPresenterSpy()
-        let sut = ProfileViewController()
-        sut.presenter = presenterSpy
+    
+    // MARK: - Properties
 
+    var presenter: ProfileViewPresenterSpyMock!
+    var spy: ProfileViewControllerSpyMock!
+    var sut: ProfileViewController!
+
+    // MARK: - Lifecycle
+
+    override func setUp() {
+        super.setUp()
+        presenter = ProfileViewPresenterSpyMock()
+        spy = ProfileViewControllerSpyMock()
+        sut = ProfileViewController()
+    }
+
+    override func tearDown() {
+        weak var weakPresenter = presenter
+        weak var weakSpy = spy
+        weak var weakSut = sut
+
+        presenter = nil
+        spy = nil
+        sut = nil
+
+        super.tearDown()
+
+        XCTAssertNil(weakPresenter)
+        XCTAssertNil(weakSpy)
+        XCTAssertNil(weakSut)
+    }
+
+    // MARK: - Presenter → ViewController interaction
+
+    func testViewDidLoadCallsPresenterViewDidLoad() {
+        // Given
+        sut.presenter = presenter
+
+        // When
         sut.viewDidLoad()
 
-        XCTAssertTrue(presenterSpy.didLoad)
+        // Then
+        XCTAssertTrue(presenter.didLoad)
     }
 
-    func testPresenterLogout() {
-        let presenterSpy = ProfileViewPresenterSpy()
-        let sut = ProfileViewController()
-        sut.presenter = presenterSpy
+    func testLogoutCallsPresenterLogout() {
+        // Given
+        sut.presenter = presenter
 
+        // When
         sut.presenter.logout()
 
-        XCTAssertTrue(presenterSpy.didLogout)
+        // Then
+        XCTAssertTrue(presenter.didLogout)
     }
-    
-    func testUpdateProfileDetails() {
-        let spy = ProfileViewControllerSpy()
+
+    // MARK: - ViewController updates UI
+
+    func testUpdateProfileDetailsUpdatesUI() {
+        // Given
         let profile = Profile(
             username: "testuser",
             name: "Test User",
@@ -31,8 +69,10 @@ final class ProfileViewTests: XCTestCase {
             bio: "Hello World"
         )
 
+        // When
         spy.updateProfileDetails(profile: profile)
 
+        // Then
         XCTAssertTrue(spy.updateProfileDetailsCalled)
         XCTAssertEqual(spy.updatedProfile?.username, profile.username)
         XCTAssertEqual(spy.updatedProfile?.name, profile.name)
@@ -40,12 +80,14 @@ final class ProfileViewTests: XCTestCase {
         XCTAssertEqual(spy.updatedProfile?.bio, profile.bio)
     }
 
-    func testUpdateAvatarImage() {
-        let spy = ProfileViewControllerSpy()
+    func testUpdateAvatarImageSetsCorrectURL() {
+        // Given
         let url = URL(string: "https://example.com/avatar.jpg")!
 
+        // When
         spy.updateAvatarImage(url: url)
 
+        // Then
         XCTAssertTrue(spy.updateAvatarImageCalled)
         XCTAssertEqual(spy.updatedAvatarURL, url)
     }

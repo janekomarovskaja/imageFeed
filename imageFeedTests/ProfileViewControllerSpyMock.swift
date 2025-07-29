@@ -1,7 +1,7 @@
 @testable import imageFeed
 import Foundation
 
-final class ProfileViewControllerSpy: ProfileViewProtocol {
+final class ProfileViewControllerSpyMock: ProfileViewProtocol {
     var updateProfileDetailsCalled = false
     var updatedProfile: Profile?
 

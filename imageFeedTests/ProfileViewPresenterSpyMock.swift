@@ -1,7 +1,7 @@
 @testable import imageFeed
 import Foundation
 
-final class ProfileViewPresenterSpy: ProfileViewPresenterProtocol {
+final class ProfileViewPresenterSpyMock: ProfileViewPresenterProtocol {
     var didLoad = false
     var didLogout = false
 

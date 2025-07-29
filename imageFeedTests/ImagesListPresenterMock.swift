@@ -1,7 +1,7 @@
 @testable import imageFeed
 import Foundation
 
-final class ImageListPresenterSpy: ImagesListPresenterProtocol {
+final class ImagesListPresenterMock: ImagesListPresenterProtocol {
     var photosCount: Int = 10
     
     var photoCalledIndex: Int?
@@ -35,7 +35,7 @@ final class ImageListPresenterSpy: ImagesListPresenterProtocol {
     }
 }
 
-final class MockImagesListService {
+final class ImagesListServiceMock {
     var photos: [Photo] = []
     func addPhoto(_ photo: Photo) {
         photos.append(photo)
