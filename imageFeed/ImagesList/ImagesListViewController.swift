@@ -1,13 +1,20 @@
 import UIKit
 
-final class ImagesListViewController: UIViewController {
+protocol ImagesListViewProtocol: AnyObject {
+    func reloadTable()
+    func insertRows(at indexPaths: [IndexPath])
+    func showLikeLoader()
+    func hideLikeLoader()
+    func updateLikeState(for cell: ImagesListCell, isLiked: Bool)
+}
+
+final class ImagesListViewController: UIViewController, ImagesListViewProtocol {
     
     @IBOutlet private var tableView: UITableView!
     private var likeBlockingView: UIView?
     private var likeActivityIndicator: UIActivityIndicatorView?
     
-    private let imagesListService = ImagesListService.shared
-    private var photos: [Photo] = []
+    private var presenter: ImagesListPresenterProtocol!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,51 +25,55 @@ final class ImagesListViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(imagesListDidChange),
-            name: ImagesListService.didChangeNotification,
-            object: nil
-        )
-        
-        imagesListService.fetchPhotosNextPage()
+        presenter.viewDidLoad()
     }
     
-    @objc private func imagesListDidChange() {
-        let oldCount = photos.count
-        let newPhotos = imagesListService.photos
-        let newCount = newPhotos.count
-        let addedCount = newCount - oldCount
-        
-        guard addedCount > 0 else { return }
-        
-        photos = newPhotos
-        
-        let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
-        
+    func configure(presenter: ImagesListPresenterProtocol) {
+        self.presenter = presenter
+    }
+    
+    func reloadTable() {
+        tableView.reloadData()
+    }
+    
+    func insertRows(at indexPaths: [IndexPath]) {
         tableView.performBatchUpdates {
             tableView.insertRows(at: indexPaths, with: .automatic)
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == SegueIdentifiers.showSingleImageSegueIdentifier,
-              let viewController = segue.destination as? SingleImageViewController,
-              let indexPath = sender as? IndexPath else {
-            super.prepare(for: segue, sender: sender)
-            return
-        }
+    func showLikeLoader() {
+        guard likeBlockingView == nil else { return }
         
-        let photo = photos[indexPath.row]
-        if let fullURL = photo.fullImageURL {
-            viewController.fullImageURL = fullURL
-        }
+        let blockingView = UIView(frame: view.bounds)
+        blockingView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        blockingView.isUserInteractionEnabled = true
+        
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.center = blockingView.center
+        indicator.startAnimating()
+        
+        blockingView.addSubview(indicator)
+        view.addSubview(blockingView)
+        
+        likeBlockingView = blockingView
+        likeActivityIndicator = indicator
     }
-}
-
-extension ImagesListViewController {
+    
+    func hideLikeLoader() {
+        likeActivityIndicator?.stopAnimating()
+        likeBlockingView?.removeFromSuperview()
+        likeBlockingView = nil
+        likeActivityIndicator = nil
+    }
+    
+    func updateLikeState(for cell: ImagesListCell, isLiked: Bool) {
+        let imageName = isLiked ? "LikeButtonActive" : "LikeButtonNoActive"
+        cell.cellLikeButton.setImage(UIImage(named: imageName), for: .normal)
+    }
+    
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        let photo = photos[indexPath.row]
+        let photo = presenter.photo(at: indexPath.row)
         
         if let url = URL(string: photo.thumbImageURL) {
             cell.cellImageView.kf.setImage(with: url)
@@ -78,39 +89,22 @@ extension ImagesListViewController {
             cell.cellDateLabel.text = "-"
         }
         
-        setIsLiked(for: cell, isLiked: photo.isLiked)
+        updateLikeState(for: cell, isLiked: photo.isLiked)
     }
     
-    private func setIsLiked(for cell: ImagesListCell, isLiked: Bool) {
-        let imageName = isLiked ? "LikeButtonActive" : "LikeButtonNoActive"
-        cell.cellLikeButton.setImage(UIImage(named: imageName), for: .normal)
-    }
-    
-    private func showLikeLoader() {
-        guard likeBlockingView == nil else { return }
-
-        let blockingView = UIView(frame: view.bounds)
-        blockingView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-        blockingView.isUserInteractionEnabled = true
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == SegueIdentifiers.showSingleImageSegueIdentifier,
+              let viewController = segue.destination as? SingleImageViewController,
+              let indexPath = sender as? IndexPath else {
+            super.prepare(for: segue, sender: sender)
+            return
+        }
         
-        let indicator = UIActivityIndicatorView(style: .large)
-        indicator.center = blockingView.center
-        indicator.startAnimating()
-        
-        blockingView.addSubview(indicator)
-        view.addSubview(blockingView)
-        
-        likeBlockingView = blockingView
-        likeActivityIndicator = indicator
+        let photo = presenter.photo(at: indexPath.row)
+        if let fullURL = photo.fullImageURL {
+            viewController.fullImageURL = fullURL
+        }
     }
-
-    private func hideLikeLoader() {
-        likeActivityIndicator?.stopAnimating()
-        likeBlockingView?.removeFromSuperview()
-        likeBlockingView = nil
-        likeActivityIndicator = nil
-    }
-
 }
 
 extension ImagesListViewController: UITableViewDelegate {
@@ -119,7 +113,7 @@ extension ImagesListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let photo = photos[indexPath.row]
+        let photo = presenter.photo(at: indexPath.row)
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
         let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
         
@@ -131,7 +125,7 @@ extension ImagesListViewController: UITableViewDelegate {
 
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        photos.count
+        presenter.photosCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -155,34 +149,13 @@ extension ImagesListViewController: UIScrollViewDelegate {
         let height = scrollView.frame.size.height
         
         if offsetY > contentHeight - height * 2 {
-            imagesListService.fetchPhotosNextPage()
+            presenter.fetchNextPage()
         }
     }
 }
 
 extension ImagesListViewController: ImagesListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let photo = photos[indexPath.row]
-        let newIsLike = !photo.isLiked
-        
-        showLikeLoader()
-
-        imagesListService.changeLike(photoId: photo.id, isLike: newIsLike) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.hideLikeLoader()
-                guard let self = self else { return }
-                
-                switch result {
-                case .success:
-                    var updatedPhoto = photo
-                    updatedPhoto.isLiked = newIsLike
-                    self.photos[indexPath.row] = updatedPhoto
-                    self.setIsLiked(for: cell, isLiked: newIsLike)
-                case .failure(let error):
-                    print("ImagesListViewController: Failed to change like: \(error)")
-                }
-            }
-        }
+        presenter.didTapLike(on: cell)
     }
 }

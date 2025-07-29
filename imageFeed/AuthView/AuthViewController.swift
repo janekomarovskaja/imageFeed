@@ -40,6 +40,7 @@ final class AuthViewController: UIViewController {
         authButton.setTitleColor(.ypBlack, for: .normal)
         authButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         view.addSubview(authButton)
+        authButton.accessibilityIdentifier = "Authenticate" 
         
         authButton.addTarget(self, action: #selector(authButtonTapped), for: .touchUpInside)
         
@@ -53,8 +54,13 @@ final class AuthViewController: UIViewController {
     
     @objc private func authButtonTapped(_ sender: UIButton) {
         let webView = WebViewViewController()
+        let authHelper = AuthHelper()
+        let presenter = WebViewPresenter(authHelper: authHelper)
         webView.delegate = self
         webView.modalPresentationStyle = .fullScreen
+        webView.presenter = presenter
+        presenter.view = webView
+
         present(webView, animated: true, completion: nil)
     }
 }
